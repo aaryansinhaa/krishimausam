@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Scaffold(
+        home: const Scaffold(
           body: Center(child: Text("Init!")),
         ));
   }
