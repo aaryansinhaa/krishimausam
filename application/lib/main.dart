@@ -7,12 +7,6 @@ void main() {
   runApp(const MyApp());
 }
 
-class GlobalVariables {
-  // ignore: non_constant_identifier_names
-  static var APIKEY = "6f5c04f409fb57efcf4d618c650bbdc3";
-  static var LOCN = "Delhi";
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -27,8 +21,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        "/": (context) => Loading(),
-        "/home": (context) => Home(),
+        "/": (context) => const Loading(),
+        "/home": (context) => const Home(),
       },
     );
   }
