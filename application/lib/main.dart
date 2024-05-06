@@ -1,7 +1,6 @@
 import 'package:application/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:application/screens/loading.dart';
-import 'package:application/screens/location.dart';
 
 void main() {
   runApp(const MyApp());

@@ -2,9 +2,9 @@ import 'package:application/screens/home.dart';
 import 'package:application/utility/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -14,27 +14,24 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  String temp_maxUI = "Loading";
-  String temp_minUI = "Loading";
+  String humidityUI = "Loading";
+  String airspeedUI = "Loading";
   String descriptionUI = "Loading";
   String iconUI = "Loading";
   String tempUI = "Loading";
-  String location = "Loading";
   void initApp() async {
-    String location = "Dehradun";
-    Helper instance = Helper(location: location);
-    await instance.getData();
+    Helper helper = Helper(location: "Dehradun");
+    await helper.getData();
     setState(() {
-      tempUI = instance.tempUI!;
-      temp_maxUI = instance.temp_maxUI!;
-      temp_minUI = instance.temp_minUI!;
-      descriptionUI = instance.descriptionUI!;
-      iconUI = instance.iconUI!;
+      tempUI = helper.tempUI!;
+      humidityUI = helper.humidityUI!;
+      airspeedUI = helper.windspeedUI!;
+      descriptionUI = helper.descriptionUI!;
+      iconUI = helper.iconUI!;
       Navigator.pushReplacementNamed(context, Home.routeName, arguments: {
-        "location": location,
         "tempUI_key": tempUI,
-        "temp_maxUI_key": temp_maxUI,
-        "temp_minUI_key": temp_minUI,
+        "airspeedUI_key": airspeedUI,
+        "humidityUI_key": humidityUI,
         "descriptionUI_key": descriptionUI,
         "iconUI_key": iconUI,
       });
@@ -45,7 +42,10 @@ class _LoadingState extends State<Loading> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initApp();
+    Future.delayed(Duration(seconds: 2), () {
+      initApp();
+    });
+    //
   }
 
   @override
@@ -97,12 +97,16 @@ class _LoadingState extends State<Loading> {
                         ],
                       ),
                     ),
+                    SpinKitThreeBounce(
+                      color: Colors.white,
+                      size: 30.0,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Shimmer.fromColors(
                         child: Text(
                           "Loading",
-                          style: GoogleFonts.poppins(fontSize: 50),
+                          style: GoogleFonts.poppins(fontSize: 30),
                         ),
                         baseColor: Colors.white,
                         highlightColor: Color.fromARGB(255, 233, 222, 123),
