@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 
 class Helper {
   //APIKEY
-  static var APIKEY = "c39b76e6931e792ba089a9662c9452e0";
+  static var APIKEY = "";
 
   // Data Parameters
 
