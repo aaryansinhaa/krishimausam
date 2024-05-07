@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => const Loading(),
         "/home": (context) => const Home(),
+        "/loading": (context) => const Loading(),
       },
     );
   }

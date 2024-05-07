@@ -49,11 +49,11 @@ class Helper {
       descriptionUI = description;
       iconUI = icon;
     } catch (e) {
-      tempUI = "Unknown Error Occured, Please try changing the name!";
-      humidityUI = "Unknown Error Occured, Please try changing the name!";
-      windspeedUI = "Unknown Error Occured, Please try changing the name!";
-      descriptionUI = "Unknown Error Occured, Please try changing the name!";
-      iconUI = "Unknown Error Occured, Please try changing the name!";
+      tempUI = "N/ A";
+      humidityUI = "N/ A";
+      windspeedUI = "N/ A";
+      descriptionUI = "City not found";
+      iconUI = "N/ A";
     }
   }
 }

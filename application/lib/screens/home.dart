@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:application/screens/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_icons/weather_icons.dart';
@@ -13,6 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController searchController = new TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -34,18 +36,20 @@ class _HomeState extends State<Home> {
       "London",
       "Any City"
     ];
+
     var _random = new Random();
     var city = cityName[_random.nextInt(cityName.length)];
     final info = ModalRoute.of(context)!.settings.arguments as Map;
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/images/bgimg.png"),
           fit: BoxFit.fill,
         ),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
         body: SafeArea(
           child: Column(
@@ -55,9 +59,9 @@ class _HomeState extends State<Home> {
                   children: [
                     Container(
                       // searchBox
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.0),
                         color: Colors.grey.shade200,
@@ -65,14 +69,26 @@ class _HomeState extends State<Home> {
                       child: Row(
                         children: [
                           GestureDetector(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Icon(Icons.search_sharp),
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              if ((searchController.text).replaceAll(" ", "") ==
+                                  "") {
+                                print("blank");
+                              } else {
+                                Navigator.pushReplacementNamed(
+                                    context, Loading.routeName,
+                                    arguments: {
+                                      "searchKey": searchController.text,
+                                    });
+                              }
+                            },
                           ),
                           Expanded(
                               child: TextField(
+                            controller: searchController,
                             decoration: InputDecoration(
                               hintText: "Try Searching " + city,
                               border: InputBorder.none,
@@ -86,7 +102,7 @@ class _HomeState extends State<Home> {
                       children: [
                         Expanded(
                           child: Container(
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                                 horizontal: 18, vertical: 10),
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
@@ -94,9 +110,35 @@ class _HomeState extends State<Home> {
                             child: Row(
                               children: [
                                 Image.network(
-                                    "https://openweathermap.org/img/wn/" +
-                                        info["iconUI_key"] +
-                                        "@2x.png"),
+                                  "https://openweathermap.org/img/wn/" +
+                                      info["iconUI_key"] +
+                                      "@2x.png",
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    } else {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress
+                                                      .expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  errorBuilder: (BuildContext context,
+                                      Object error, StackTrace? stackTrace) {
+                                    // Handle error here
+                                    return const Text('Error loading image');
+                                  },
+                                ),
                                 Column(
                                   children: [
                                     Center(
@@ -111,7 +153,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     Center(
                                       child: Text(
-                                        "in Dehradun",
+                                        "in " + info["city"],
                                         style: GoogleFonts.poppins(
                                           color: Colors.black,
                                           fontSize: 17,
@@ -133,7 +175,7 @@ class _HomeState extends State<Home> {
                         Expanded(
                           child: Container(
                             height: 250,
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                                 horizontal: 18, vertical: 10),
                             decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
@@ -144,7 +186,7 @@ class _HomeState extends State<Home> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(WeatherIcons.thermometer),
+                                    const Icon(WeatherIcons.thermometer),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -153,7 +195,9 @@ class _HomeState extends State<Home> {
                                           padding: const EdgeInsets.fromLTRB(
                                               10, 30, 5, 0),
                                           child: Text(
-                                            info["tempUI_key"],
+                                            info["tempUI_key"]
+                                                .toString()
+                                                .substring(0, 4),
                                             style: GoogleFonts.poppins(
                                                 color: Image.network(
                                                         "https://openweathermap.org/img/wn/" +
@@ -164,8 +208,8 @@ class _HomeState extends State<Home> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        Text(
-                                          "C",
+                                        const Text(
+                                          "°C",
                                           style: TextStyle(fontSize: 30),
                                         )
                                       ],
@@ -188,7 +232,7 @@ class _HomeState extends State<Home> {
                               Expanded(
                                 child: Container(
                                   height: 150,
-                                  margin: EdgeInsets.symmetric(
+                                  margin: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 18),
                                   decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.5),
@@ -200,7 +244,7 @@ class _HomeState extends State<Home> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Row(
+                                          const Row(
                                             children: [
                                               Padding(
                                                 padding:
@@ -234,7 +278,7 @@ class _HomeState extends State<Home> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              Text(
+                                              const Text(
                                                 "%",
                                                 style: TextStyle(
                                                     color: Colors.black,
@@ -251,7 +295,7 @@ class _HomeState extends State<Home> {
                               Expanded(
                                 child: Container(
                                   height: 150,
-                                  margin: EdgeInsets.symmetric(
+                                  margin: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 18),
                                   decoration: BoxDecoration(
                                       color: Colors.white.withOpacity(0.5),
@@ -263,17 +307,15 @@ class _HomeState extends State<Home> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Row(
+                                          const Row(
                                             children: [
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
+                                                padding: EdgeInsets.all(8.0),
                                                 child: Icon(
                                                     WeatherIcons.day_windy),
                                               ),
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
+                                                padding: EdgeInsets.all(10.0),
                                                 child: Text(
                                                   "Wind Speed",
                                                   style: TextStyle(
@@ -290,21 +332,29 @@ class _HomeState extends State<Home> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                info["airspeedUI_key"],
+                                                (info["airspeedUI_key"])
+                                                    .toString()
+                                                    .substring(0, 4),
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.black,
                                                     fontSize: 40,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
+                                            ],
+                                          ),
+                                          const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
                                               Text(
                                                 "km/hr",
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15),
-                                              )
+                                              ),
                                             ],
-                                          ),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -321,8 +371,8 @@ class _HomeState extends State<Home> {
               ),
               Container(
                 //bottom text
-                padding: EdgeInsets.all(10),
-                child: Column(
+                padding: const EdgeInsets.all(10),
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(

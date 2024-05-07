@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Loading extends StatefulWidget {
+  static const String routeName = "/loading";
   const Loading({super.key});
 
   @override
@@ -19,8 +20,9 @@ class _LoadingState extends State<Loading> {
   String descriptionUI = "Loading";
   String iconUI = "Loading";
   String tempUI = "Loading";
+  String city = "Dehradun";
   void initApp() async {
-    Helper helper = Helper(location: "Dehradun");
+    Helper helper = Helper(location: city);
     await helper.getData();
     setState(() {
       tempUI = helper.tempUI!;
@@ -34,15 +36,15 @@ class _LoadingState extends State<Loading> {
         "humidityUI_key": humidityUI,
         "descriptionUI_key": descriptionUI,
         "iconUI_key": iconUI,
+        "city": city,
       });
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       initApp();
     });
     //
@@ -50,14 +52,18 @@ class _LoadingState extends State<Loading> {
 
   @override
   void setState(VoidCallback fn) {
-    // TODO: implement setState
     super.setState(fn);
   }
 
   @override
   Widget build(BuildContext context) {
+    final searchtext = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (searchtext?.isNotEmpty ?? false) {
+      city = searchtext!["searchKey"];
+    }
+
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/images/bgimg.png"),
           fit: BoxFit.fill,
@@ -97,19 +103,20 @@ class _LoadingState extends State<Loading> {
                         ],
                       ),
                     ),
-                    SpinKitThreeBounce(
+                    const SpinKitThreeBounce(
                       color: Colors.white,
                       size: 30.0,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Shimmer.fromColors(
+                        baseColor: Colors.white,
+                        highlightColor:
+                            const Color.fromARGB(255, 233, 222, 123),
                         child: Text(
                           "Loading",
                           style: GoogleFonts.poppins(fontSize: 30),
                         ),
-                        baseColor: Colors.white,
-                        highlightColor: Color.fromARGB(255, 233, 222, 123),
                       ),
                     ),
                   ],
@@ -118,10 +125,10 @@ class _LoadingState extends State<Loading> {
               RichText(
                   textAlign: TextAlign.end,
                   text: TextSpan(children: [
-                    TextSpan(
+                    const TextSpan(
                         text: "Made with ",
                         style: TextStyle(color: Colors.black, fontSize: 15)),
-                    WidgetSpan(
+                    const WidgetSpan(
                       child: Icon(
                         CupertinoIcons.heart,
                         size: 15,
